@@ -2,6 +2,7 @@ from os import stat
 from tkinter import *
 from tkinter import filedialog
 import codecs
+from Class_Menu import Menu
 
 
 def cargar_Menu():
@@ -10,23 +11,19 @@ def cargar_Menu():
     Args:
         lista (class): Listas para guardar informacion del archivo
     """
+    menu_ = Menu()
     with codecs.open(filedialog.askopenfilename(filetypes=[("Text files","*.lfp")]), encoding='utf-8') as filename:
-        token, error = afd(filename)
-        for i in token:
-            print(i)
-        #    try:
-        #        i[2] = "%.2f" % float(i[2])
-        #        print(i[0] + " " + i[1] + " " + i[2] + " " + i[3])
-        #    except:
-        #        print("\nSection: " + i[0] + "\n")
-        for i in error:
-            print(i)
+        res_name, token, error, tokens = afd(filename)
+        menu_.update(res_name, token, error, tokens)
     filename.close()
+    return menu_
 
 def afd(file):
     cnt = 0
     err_cnt = 1
     token = [[]]
+    tokens = []
+    tokens_cnt = 1
     error = []
     res_name = ""
     
@@ -45,20 +42,24 @@ def afd(file):
                     elif(charCode >= 97 and charCode <= 122 or charCode == 61):
                         cache += str(char)
                     elif(charCode == 39):
+                        tokens.append([tokens_cnt, i, j, char,"Delimiter"])
+                        tokens_cnt += 1
                         cache = ""
                         state = 1
                     else:
                         if(cache == "restaurante="):
-                            error.append([err_cnt, cnt, char, "Caracter Invalido"])
+                            error.append([err_cnt, i, j, char, "Caracter Invalido"])
                             err_cnt += 1
                         elif(char == "\n"):
                             continue
                         else:
-                            error.append([err_cnt, cnt, cache+char, "Caracter Invalido"])
+                            error.append([err_cnt, i, j, cache+char, "Caracter Invalido"])
                             cache == ""
                             err_cnt += 1
                 elif(state==1):
                     if(charCode == 39):
+                        tokens.append([tokens_cnt, i, j, char,"Delimiter"])
+                        tokens_cnt += 1
                         res_name = cache
                         cache = ""
                         state = 0
@@ -67,17 +68,25 @@ def afd(file):
             else: # Sections
                 if(state == 0): # Section or data checker
                     if(charCode == 39):
+                        tokens.append([tokens_cnt, i, j, char,"Delimiter"])
+                        tokens_cnt += 1
                         state = 1
                     elif(charCode == 91):
+                        tokens.append([tokens_cnt, i, j, char,"Delimiter"])
+                        tokens_cnt += 1
                         state = 2
                     else:
                         if(char == "\n"):
                             continue
-                        error.append([err_cnt, cnt, char, "Caracter Invalido"])
+                        error.append([err_cnt, i, j, char, "Caracter Invalido"])
                         err_cnt += 1
                 elif(state == 1): # String Collector
                     if(charCode == 39):
+                        tokens.append([tokens_cnt, i, j, char,"Delimiter"])
+                        tokens_cnt += 1
                         token[cnt].append(cache)
+                        tokens.append([tokens_cnt, i, j, cache,"String"])
+                        tokens_cnt += 1
                         cache = ""
                         state = 2
                     else:
@@ -87,6 +96,8 @@ def afd(file):
                         j+=1
                         continue
                     elif(charCode == 39):
+                        tokens.append([tokens_cnt, i, j, char,"Delimiter"])
+                        tokens_cnt += 1
                         state = 1
                     elif((charCode >= 97 and charCode <= 122) or charCode == 95):
                         cache += str(char)
@@ -101,19 +112,28 @@ def afd(file):
                             j+=1
                             continue
                         token[cnt].append(cache)
+                        tokens.append([tokens_cnt, i, j, cache, "Identificador"])
+                        tokens_cnt += 1
                         cache = ""
                     elif(charCode == 58):
                         token.append([])
+                        tokens.append([tokens_cnt, i, j, char,"Delimiter"])
+                        tokens_cnt += 1
+                        tokens.append([tokens_cnt, i, j, cache, "String, Identificador"])
+                        tokens_cnt += 1
                         cache = ""
                         cnt += 1
                     elif((charCode == 93) and (j >= (len(line)-2))):
                         token.append([])
+                        tokens.append([tokens_cnt, i, j, char,"Delimiter"])
+                        tokens_cnt += 1
                         cache = ""
                         cnt += 1
                     else:
                         if(char == "\n"):
                             continue
-                        error.append([err_cnt, cnt, char, "Caracter Invalido"])
+                        error.append([err_cnt, i, j, char, "Caracter Invalido"])
+                        err_cnt += 1
                 elif(state == 3): # Number Collector
                     if(charCode >= 48 and charCode <= 57):
                         cache += str(char)
@@ -121,14 +141,16 @@ def afd(file):
                         cache += str(char)
                     elif(charCode == 59):
                         token[cnt].append(cache)
+                        tokens.append([tokens_cnt, i, j, cache,"Float"])
+                        tokens_cnt += 1
                         cache = ""
                         state = 2
                     else:
                         if(char == "\n"):
                             continue
-                        error.append([err_cnt, cnt, char, "Caracter Invalido"])
+                        error.append([err_cnt, i, j, char, "Caracter Invalido"])
+                        err_cnt += 1
             j+=1
         i += 1
-    print(res_name) 
-    return token, error
-cargar_Menu()
+    token.pop()
+    return res_name, token, error, tokens

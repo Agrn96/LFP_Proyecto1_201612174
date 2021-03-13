@@ -1,0 +1,22 @@
+// menu_ Circular, Matriz: Restaurante LFP
+digraph {
+	A [label="Restaurante LFP"]
+	B0 [label=Bebidas]
+	A -> B0
+	B1 [label="Bebid$a #1 Q11.00 Descrip$ción Bebida 1"]
+	B0 -> B1
+	B2 [label="Bebida #2 Q10.50 Descripción Bebida 2"]
+	B0 -> B2
+	B3 [label=Desayunos]
+	A -> B3
+	B4 [label="Desayuno 1 Q45.00 Descripción Desayuno 1"]
+	B3 -> B4
+	B5 [label="Desayuno 2 Q40.00 Descripción Desayuno 2"]
+	B3 -> B5
+	B6 [label="Desayuno 3 Q35.00 Descripción Desayuno 3"]
+	B3 -> B6
+	B7 [label="  Postres"]
+	A -> B7
+	B8 [label="Postre 1 Q25.00 Descripción Postre 1"]
+	B7 -> B8
+}

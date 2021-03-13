@@ -1,44 +1,30 @@
 from Cargar_Orden import cargar_Orden
 from Cargar_Menu import cargar_Menu
-from tkinter.constants import CENTER
 from Menu import menu
 import tkinter as tk
+from Class_Menu import Menu
+from Class_Orden import Orden
 
-def main(): 
+menu_ = Menu()
+orden_ = Orden()
+def main(menu_, orden_): 
     """Mientras x != 6, el menu sigue apareciendo
     """     
-    window = tk.Tk()
-    frame_Info = tk.Frame()
-    frame_Menu = tk.Frame()
+    x = 0
+    while(x != 6):
+        print("")
+        print("Menu Principal")
+        print("1. Cargar Menu")
+        print("2. Cargar Orden")
+        print("3. Generar Menu")
+        print("4. Generar Factura")
+        print("5. Generar Arbol")
+        print("6. Salir")
+        print("Choose Menu Option: ", end="\t")
+        #try:
+        x = int(input())                                #opcion del Menu
+        menu_, orden_ = menu(menu_, orden_, x)          #Llamada al Menu utilizando el input del usuario
+        #except:
+        #   print("ERROR: Opcion Invalido")
 
-    title = tk.Label(master = frame_Info, text = "Proyecto 1 - LFP", width=50)
-    title.pack()
-
-    author = tk.Label(master = frame_Info, text = "Alberto Gabriel Reyes Ning, 201612174\nLFP A+\n",)
-    author.pack()
-        
-    info_0 = tk.Label(master = frame_Menu, text = "Menu Principal")
-    info_0.pack()
-
-    button_0 = tk.Button(master = frame_Menu, text = "1. Cargar Menu",command=lambda: cargar_Menu(), width= 20, height=2, activebackground="#989898")
-    button_0.pack()
-
-    button_1 = tk.Button(master = frame_Menu, text = "2. Cargar_Orden",command=lambda: cargar_Orden(), width= 20, height=2, activebackground="#989898")
-    button_1.pack()
-
-    button_2 = tk.Button(master = frame_Menu, text = "3. Generar Menu",command=lambda: menu(3), width= 20, height=2, activebackground="#989898")
-    button_2.pack()
-
-    button_3 = tk.Button(master = frame_Menu, text = "4. Generar Factura",command=lambda: menu(4), width= 20, height=2, activebackground="#989898")
-    button_3.pack()
-
-    button_4 = tk.Button(master = frame_Menu, text = "5. Generar Arbol",command=lambda: menu(5), width= 20, height=2, activebackground="#989898")
-    button_4.pack()
-
-    button_5 = tk.Button(master = frame_Menu, text = "6. Salida",command= window.destroy, width= 20, height=2, activebackground="#989898")
-    button_5.pack()
-
-    frame_Info.pack()
-    frame_Menu.pack()
-    window.mainloop()
-main()
+main(menu_, orden_)
