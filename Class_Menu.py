@@ -12,7 +12,6 @@ class Menu():
                 temp = i[2]
                 i[2] = "%.2f" % float(i[2])
                 if(str(i[2]) != str(temp)):
-                    print(i[2], temp)
                     error.append(["n","x","y",temp,"Numero Invalido"])
                 
             except:

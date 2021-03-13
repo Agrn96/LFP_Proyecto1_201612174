@@ -21,10 +21,10 @@ def main(menu_, orden_):
         print("5. Generar Arbol")
         print("6. Salir")
         print("Choose Menu Option: ", end="\t")
-        #try:
-        x = int(input())                                #opcion del Menu
-        menu_, orden_ = menu(menu_, orden_, x)          #Llamada al Menu utilizando el input del usuario
-        #except:
-        #   print("ERROR: Opcion Invalido")
+        try:
+            x = int(input())                                #opcion del Menu
+            menu_, orden_ = menu(menu_, orden_, x)          #Llamada al Menu utilizando el input del usuario
+        except:
+           print("ERROR: Opcion Invalido")
 
 main(menu_, orden_)
